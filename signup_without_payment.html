@@ -1,0 +1,156 @@
+<html>
+  <head>
+
+<script
+  src="https://code.jquery.com/jquery-3.1.1.min.js"
+  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+  crossorigin="anonymous"></script>
+
+    <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<script src="https://assets.chargeover.com/chargeover/minify/?g=chargeover.js"></script>
+<script>
+  ChargeOver.Core.setup({
+    'instance': 'webinar-demo.chargeover.com',
+    'token': 'xKD8m63lGs9p7gUIOiaJfNC24QTrPXY1'
+  });
+</script>
+<script>
+
+// Our callback function (this gets called after data is sent to ChargeOver)
+function my_callback_function(code, message, response)
+{
+    if (code == ChargeOver.Core.CODE_OK)
+    {
+        //alert('You have signed up! Thanks ' + response.user.first_name + '!');
+
+        $('#form').hide();
+        $('#alert').show();
+    }
+    else
+    {
+        alert('An error occurred: ' + message);
+    }
+}
+
+$(document).ready(function () {
+
+  $('#submit').click(function() {
+
+    // The data we want to send to ChargeOver
+    var my_data = {
+
+      'send_welcome_notice': true,    // Default is FALSE. TRUE sends a welcome e-mail to new sign-ups, while FALSE will not send them anything.
+
+      'customer': {
+          company: $('#your-name').val(),
+
+          // external_key: '1234abcd1234',     // Use external keys to link your app to ChargeOver data
+
+          bill_addr1: '',
+          bill_addr2: '',
+          bill_addr3: '',
+          bill_city: '',
+          bill_state: '',
+          bill_postcode: '',
+          bill_country: 'United States',
+
+          custom_1: '',      // Custom field values
+          custom_2: '',
+          custom_3: ''
+      },
+
+      'package': {
+          // paycycle: 'mon',       // The paycycle will default to your default payment cycle, but can be specific here instead
+          // paycycle: 'yrl',
+          // paycycle: 'qtr',
+
+          // external_key: 'abcd12341234'
+
+          // custom_1: '',
+          // custom_2: '',
+          // custom_3: '',
+
+          // nickname: '',      If customers have multiple subscriptions, you can use nicknames to distinguish them
+
+          // holduntil_datetime: '2015-06-01 00:00:00',     // You can use this to hold/delay billing until a specific date
+      },
+
+      'user': {
+          name: $('#your-name').val(),
+          email: $('#email-address').val(),
+          phone: ''
+      },
+
+      '_comment': 'This is a list of hashes for the services to subscribe the customer to',
+      'line_items': [
+
+          {
+              'item_id': 1
+          }
+
+      ]
+
+      // ... or you can refer to item external_key values instead of item_id values
+      // item_external_keys: [ ... ]
+
+      // ... or you can refer to item token values instead of item_id values
+      // item_tokens: [ ... ]
+    };
+
+    // Call the signup method
+    ChargeOver.Signup.signup(my_data, my_callback_function);
+  });
+
+  $('#alert').hide();
+
+});
+
+</script>
+
+  </head>
+  <body>
+
+<div class="container">
+
+  <div class="alert alert-success" id="alert">
+    <strong>Success!</strong> Thanks for signing up!
+  </div>
+
+  <form class="form-horizontal" role="form" id="form">
+    <fieldset>
+      <legend>Sign Up</legend>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label" for="email-address">Email Address</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" name="email-address" id="email-address" placeholder="Email Address">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label" for="card-holder-name">Your Name</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" name="card-holder-name" id="your-name" placeholder="Your Name">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+          <button type="button" class="btn btn-success" id="submit">Sign Up</button>
+        </div>
+      </div>
+    </fieldset>
+  </form>
+</div>
+
+  </body>
+</html>
