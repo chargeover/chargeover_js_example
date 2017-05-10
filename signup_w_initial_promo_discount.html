@@ -16,11 +16,12 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 
-<script src="https://assets.chargeover.com/chargeover/minify/?g=chargeover.js"></script>
+<script src="http://dev.chargeover.com/assets/minify/?g=chargeover.js"></script>
 <script>
   ChargeOver.Core.setup({
-    'instance': 'webinar-demo.chargeover.com',
-    'token': 'xKD8m63lGs9p7gUIOiaJfNC24QTrPXY1'
+    'instance': 'dev.chargeover.com',
+    'token': 'xW6qLYeT73ouG5gVp4KQzZt28SFv1cdw',
+    'scheme': 'http'
   });
 </script>
 <script>
@@ -105,11 +106,21 @@ $(document).ready(function () {
           phone: ''
       },
 
-      '_comment': 'This is a list of hashes for the services to subscribe the customer to',
+      '_comment': 'This is a list of objects for the services to subscribe the customer to',
       'line_items': [
 
+
           {
-              'item_id': 1
+            '_comment': 'This is the main subscription the customer is subscribing to',
+
+            'item_id': 1
+          },
+
+          {
+            '_comment': 'This is a second line on the subscription - a discount line - that expires after 3 billing cycles (e.g. 3 months). So the discount only occurs for the first 3 months, then the discount stops.',
+
+            'item_id': 2,
+            'expire_recurs': 3
           }
 
       ]
@@ -140,13 +151,14 @@ $(document).ready(function () {
     <strong>Success!</strong> Thanks for signing up!
   </div>
 
-  <h1>Signup while collecting a credit card</h1>
-
-  <p>
-    This example illustrates a basic signup form, securely collecting credit card details in a PCI compliant manner.
-  </p>
-
   <form class="form-horizontal" role="form" id="form">
+
+    <h1>Signup form with an initial promotional discount</h1>
+
+    <p>
+      This example illustratoes a signup form where the first few months of service are given at a discounted rate.
+    </p>
+
     <fieldset>
       <legend>Payment</legend>
 
