@@ -16,11 +16,12 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 
-<script src="https://assets.chargeover.com/chargeover/minify/?g=chargeover.js"></script>
+<script src="http://dev.chargeover.com/assets/minify/?g=chargeover.js"></script>
 <script>
   ChargeOver.Core.setup({
     'instance': 'dev.chargeover.com',
-    'token': 'xKD8m63lGs9p7gUIOiaJfNC24QTrPXY1'
+    'token': 'G8E1LzT3gjdnxiqIUfB6HSlKZuPD40ha',
+    'scheme': 'http'
   });
 </script>
 <script>
@@ -105,13 +106,9 @@ $(document).ready(function () {
           phone: ''
       },
 
-      '_comment': 'This is a list of hashes for the services to subscribe the customer to',
+      '_comment': 'This is a list of objects for the services to subscribe the customer to',
       'line_items': [
-
-          {
-              'item_id': 1
-          }
-
+        // This starts empty, and then we fill it from the buttons they've clicked
       ]
 
       // ... or you can refer to item external_key values instead of item_id values
@@ -120,6 +117,50 @@ $(document).ready(function () {
       // ... or you can refer to item token values instead of item_id values
       // item_tokens: [ ... ]
     };
+
+    // Gold plan
+    if ($('#plan_gold').val() == 1)
+    {
+      my_data.line_items.push({
+        item_id: 10
+      });
+
+      if ($('#addon1').val() == 1)
+      {
+        my_data.line_items.push({
+          item_id: 12
+        });
+      }
+
+      if ($('#addon2').val() == 1)
+      {
+        my_data.line_items.push({
+          item_id: 13
+        });
+      }
+    }
+
+    // Silver plan
+    if ($('#plan_silver').val() == 1)
+    {
+      my_data.line_items.push({
+        item_id: 11
+      });
+
+      if ($('#addon3').val() == 1)
+      {
+        my_data.line_items.push({
+          item_id: 14
+        });
+      }
+
+      if ($('#addon4').val() == 1)
+      {
+        my_data.line_items.push({
+          item_id: 15
+        });
+      }
+    }
 
     // Call the signup method
     ChargeOver.Signup.signup(my_data, my_callback_function);
@@ -140,13 +181,63 @@ $(document).ready(function () {
     <strong>Success!</strong> Thanks for signing up!
   </div>
 
-  <h1>Signup while collecting a credit card</h1>
+    <h1>Signup form with multiple products (e.g. a bundle)</h1>
 
-  <p>
-    This example illustrates a basic signup form, securely collecting credit card details in a PCI compliant manner.
-  </p>
+    <p>
+      This example illustratoes a signup form where the customers signs up for multiple plans/products at once (e.g. a bundle or group of services).
+    </p>
 
-  <form class="form-horizontal" role="form" id="form">
+    <h2>
+      Which plan do you want to subscribe to?
+    </h2>
+
+    <div id="plans" style="margin-left: 30px;">
+     <button type="button" class="btn btn-danger plan" onclick="$('.plan').hide(); $('#plan_gold').val(1); $('#gold').show();">Subscribe to the GOLD plan</button>
+     <input type="hidden" id="plan_gold" value="0">
+
+     <button type="button" class="btn btn-primary plan" onclick="$('.plan').hide(); $('#plan_silver').val(1); $('#silver').show();">Subscribe to the SILVER plan</button>
+     <input type="hidden" id="plan_silver" value="0">
+    </div>
+
+    <div class="panel panel-default" id="gold" style="display: none;">
+      <div class="panel-body">
+
+        <div class="alert alert-danger" role="alert">You chose the GOLD plan! Great</div>
+
+        <h3>Choose from these great add-ons!</h3>
+
+         <button type="button" class="btn btn-primary" onclick="$('#addon1').val(1); $(this).text('Added').addClass('btn-success');">Add This</button> &nbsp; 10 gigabytes extra bandwidth<br>
+         <input type="hidden" id="addon1" value="0">
+
+         <br>
+
+         <button type="button" class="btn btn-primary" onclick="$('#addon2').val(1); $(this).text('Added').addClass('btn-success');">Add This</button> &nbsp; 5 hours of tech support<br>
+         <input type="hidden" id="addon2" value="0">
+
+      </div>
+    </div>
+    <div class="panel panel-default" id="silver" style="display: none">
+      <div class="panel-body">
+
+      <div class="alert alert-info" role="alert">You chose the SILVER plan! Great</div>
+
+        <h3>Choose from these great add-ons!</h3>
+
+         <button type="button" class="btn btn-primary" onclick="$('#addon3').val(1); $(this).text('Added').addClass('btn-success');">Add This</button> &nbsp; 2 gigabytes extra bandwidth<br>
+         <input type="hidden" id="addon3" value="0">
+
+         <br>
+
+         <button type="button" class="btn btn-primary" onclick="$('#addon4').val(1); $(this).text('Added').addClass('btn-success');">Add This</button> &nbsp; 2 hours of tech support<br>
+         <input type="hidden" id="addon4" value="0">
+
+      </div>
+    </div>
+
+    <form class="form-horizontal" role="form" id="form">
+
+    <br>
+
     <fieldset>
       <legend>Payment</legend>
 
