@@ -1,0 +1,475 @@
+<html>
+  <head>
+
+<script
+  src="https://code.jquery.com/jquery-3.1.1.min.js"
+  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+  crossorigin="anonymous"></script>
+
+    <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<!-- -->
+<link rel="stylesheet" href="css/signup_w_compare_view.css">
+
+<script src="http://dev.chargeover.com/assets/minify/?g=chargeover.js"></script>
+<script>
+  ChargeOver.Core.setup({
+    'instance': 'dev.chargeover.com',
+    'token': 'oMJq7dyIFTs3uLDtlw2AXYKR8Hg6CVSr',
+    'scheme': 'http'
+  });
+</script>
+<script>
+
+// Our callback function (this gets called after data is sent to ChargeOver)
+function my_callback_function(code, message, response)
+{
+    if (code == ChargeOver.Core.CODE_OK)
+    {
+        //alert('You have signed up! Thanks ' + response.user.first_name + '!');
+
+        $('#form').hide();
+        $('#alert').show();
+    }
+    else
+    {
+        alert('An error occurred: ' + message);
+    }
+}
+
+$(document).ready(function () {
+
+  $('#choose-professional').click(function() {
+
+    $('#chooser').hide();
+
+    $('#professional-form').show();
+    $('#form').show();
+
+    $('#plan-chosen').val('professional');
+
+  });
+
+  $('#choose-corporate').click(function() {
+
+    $('#chooser').hide();
+
+    $('#corporate-form').show();
+    $('#form').show();
+
+    $('#plan-chosen').val('corporate');
+
+  });
+
+  $('#submit').click(function() {
+
+    // The data we want to send to ChargeOver
+    var my_data = {
+
+      'send_welcome_notice': true,    // Default is FALSE. TRUE sends a welcome e-mail to new sign-ups, while FALSE will not send them anything.
+
+      'customer': {
+          company: $('#card-holder-name').val(),
+
+          // external_key: '1234abcd1234',     // Use external keys to link your app to ChargeOver data
+
+          bill_addr1: '',
+          bill_addr2: '',
+          bill_addr3: '',
+          bill_city: '',
+          bill_state: '',
+          bill_postcode: '',
+          bill_country: 'United States',
+
+          custom_1: '',      // Custom field values
+          custom_2: '',
+          custom_3: ''
+      },
+      'creditcard': {
+          number: $('#card-number').val(),
+          expdate_month: $('#expiry-month').val(),
+          expdate_year: $('#expiry-year').val(),
+          name: $('#card-holder-name').val(),
+
+          // CVV/CSC card security code (used only for card validation, not stored)
+          cvv: $('#cvv').val()
+
+          // Optional address information (can be used for address verification)
+          // address: '',
+          // city: '',
+          // state: '',
+          // postcode: '',
+          // country: ''
+      },
+      'package': {
+          // paycycle: 'mon',       // The paycycle will default to your default payment cycle, but can be specific here instead
+          // paycycle: 'yrl',
+          // paycycle: 'qtr',
+
+          // external_key: 'abcd12341234'
+
+          // custom_1: '',
+          // custom_2: '',
+          // custom_3: '',
+
+          // nickname: '',      If customers have multiple subscriptions, you can use nicknames to distinguish them
+
+          // holduntil_datetime: '2015-06-01 00:00:00',     // You can use this to hold/delay billing until a specific date
+      },
+
+      'user': {
+          name: $('#card-holder-name').val(),
+          email: $('#email-address').val(),
+          phone: ''
+      },
+
+      '_comment': 'This is a list of objects for the services to subscribe the customer to',
+      'line_items': []
+
+      // ... or you can refer to item external_key values instead of item_id values
+      // item_external_keys: [ ... ]
+
+      // ... or you can refer to item token values instead of item_id values
+      // item_tokens: [ ... ]
+    };
+
+    // Which plan was chosen?
+    if ($('#plan-chosen').val() == 'professional')
+    {
+      // Plan
+      my_data.line_items.push({
+        item_id: 9
+      });
+
+      // Users
+      my_data.line_items.push({
+        item_id: 10,
+        line_quantity: $('#professional-users').val()
+      });
+
+       // Kiosks
+      my_data.line_items.push({
+        item_id: 11,
+        line_quantity: $('#professional-kiosks').val()
+      });
+    }
+    else
+    {
+      // Plan
+      my_data.line_items.push({
+        item_id: 12
+      });
+
+      // Shows
+      my_data.line_items.push({
+        item_id: 13,
+        line_quantity: $('#corporate-shows').val()
+      });
+
+      // Users
+      my_data.line_items.push({
+        item_id: 14,
+        line_quantity: $('#corporate-users').val()
+      });
+
+      // Kiosks
+      my_data.line_items.push({
+        item_id: 15,
+        line_quantity: $('#corporate-kiosks').val()
+      });
+    }
+
+    console.log(my_data);
+
+    // Call the signup method
+    ChargeOver.Signup.signup(my_data, my_callback_function);
+  });
+
+  $('#alert').hide();
+
+});
+
+</script>
+
+  </head>
+  <body>
+
+<div class="container">
+
+  <div class="alert alert-success" id="alert">
+    <strong>Success!</strong> Thanks for signing up!
+  </div>
+
+  <form class="form-horizontal" role="form">
+
+    <input type="hidden" id="plan-chosen" value="">
+
+    <h1>Signup form with a pricing chooser</h1>
+
+    <p>
+      This example illustratoes a signup form where the customers sees a pricing chooser and chooses some options.
+    </p>
+
+     <div id="chooser" class='wrapper'>
+      <div class='package'>
+        <div class='name'>Professional</div>
+        <div class='price'>$500 per show</div>
+        <hr>
+        <ul>
+          <li>
+            <strong>Single</strong>
+            show
+          </li>
+          <li>
+            <strong>10</strong>
+            users included<br>($50 per additional)
+          </li>
+          <li>
+            <strong>$100</strong>
+            per self-serve kiosk
+          </li>
+        </ul>
+                  <button type="button" class="btn btn-primary" id="choose-professional">Select</button>
+
+      </div>
+      <div class='package brilliant'>
+        <div class='name'>Corporate</div>
+        <div class='price'>$349/month</div>
+        <hr>
+        <ul>
+          <li>
+            <strong>12</strong>
+            shows<br>
+            ($300 per additional)
+          </li>
+          <li>
+            <strong>15</strong>
+            users<br>
+            ($25 per additional)
+          </li>
+          <li>
+            <strong>1</strong>
+            self-serve kiosk<br>
+            ($100 per additional)
+          </li>
+        </ul>
+
+        <button type="button" class="btn btn-primary" id="choose-corporate">Select</button>
+
+      </div>
+      <div class='package'>
+        <div class='name'>Enterprise</div>
+        <div class='price'>Call for pricing</div>
+        <hr>
+        <ul>
+          <li>
+            <strong>Unlimited</strong>
+            shows
+          </li>
+          <li>
+            <strong>Unlimited</strong>
+            users
+          </li>
+          <li>
+            <strong>Unlimited</strong>
+            kiosks
+          </li>
+          <li>
+            <strong>Call <a href="tel:8773944339">877-394-4339</a></strong>
+
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="form" style="display: none">
+      <fieldset id="professional-form" style="display: none">
+        <legend>Options</legend>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label" for="email-address"># of Users</label>
+          <div class="col-sm-4">
+            <select class="form-control" id="professional-users" placeholder="# of users">
+              <option value="10">10 users</option>
+              <option value="11">11 users</option>
+              <option value="12">12 users</option>
+              <option value="13">13 users</option>
+              <option value="14">14 users</option>
+              <option value="15">15 users</option>
+              <option value="16">16 users</option>
+              <option value="17">17 users</option>
+              <option value="18">18 users</option>
+              <option value="19">19 users</option>
+              <option value="20">20 users</option>
+            </select>
+            <div> (10 included at no charge, $50 per additional)</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label" for="email-address"># of Self-Serve Kiosks</label>
+          <div class="col-sm-4">
+            <select class="form-control" id="professional-kiosks" placeholder="# of kiosks">
+              <option value="0">0 kiosks</option>
+              <option value="1">1 kiosks</option>
+              <option value="2">2 kiosks</option>
+              <option value="3">3 kiosks</option>
+              <option value="4">4 kiosks</option>
+              <option value="5">5 kiosks</option>
+              <option value="6">6 kiosks</option>
+              <option value="7">7 kiosks</option>
+              <option value="8">8 kiosks</option>
+              <option value="9">9 kiosks</option>
+              <option value="10">10 kiosks</option>
+            </select>
+            <div> ($100 per kiosk)</div>
+          </div>
+        </div>
+
+      </fieldset>
+
+      <fieldset id="corporate-form" style="display: none">
+        <legend>Options</legend>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label" for="email-address"># of Shows</label>
+          <div class="col-sm-4">
+            <select class="form-control" id="corporate-shows" placeholder="# of shows">
+              <option value="12">12 shows</option>
+              <option value="13">13 shows</option>
+              <option value="14">14 shows</option>
+              <option value="15">15 shows</option>
+              <option value="16">16 shows</option>
+              <option value="17">17 shows</option>
+              <option value="18">18 shows</option>
+              <option value="19">19 shows</option>
+              <option value="20">20 shows</option>
+            </select>
+            <div> (15 included at no charge, $25 per additional)</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label" for="email-address"># of Users</label>
+          <div class="col-sm-4">
+            <select class="form-control" id="corporate-users" placeholder="# of users">
+              <option value="15">15 users</option>
+              <option value="16">16 users</option>
+              <option value="17">17 users</option>
+              <option value="18">18 users</option>
+              <option value="19">19 users</option>
+              <option value="21">20 users</option>
+              <option value="22">21 users</option>
+              <option value="23">22 users</option>
+              <option value="24">23 users</option>
+              <option value="25">25 users</option>
+            </select>
+            <div> (15 included at no charge, $25 per additional)</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label" for="email-address"># of Self-Serve Kiosks</label>
+          <div class="col-sm-4">
+            <select class="form-control" id="corporate-kiosks" placeholder="# of kiosks">
+              <option value="1">1 kiosks</option>
+              <option value="2">2 kiosks</option>
+              <option value="3">3 kiosks</option>
+              <option value="4">4 kiosks</option>
+              <option value="5">5 kiosks</option>
+              <option value="6">6 kiosks</option>
+              <option value="7">7 kiosks</option>
+              <option value="8">8 kiosks</option>
+              <option value="9">9 kiosks</option>
+              <option value="10">10 kiosks</option>
+            </select>
+            <div> (1 included at no charge, $100 per additional)</div>
+          </div>
+        </div>
+
+      </fieldset>
+
+      <fieldset>
+        <legend>Payment</legend>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label" for="email-address">Email Address</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" name="email-address" id="email-address" placeholder="Email Address">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label" for="card-holder-name">Name on Card</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" name="card-holder-name" id="card-holder-name" placeholder="Card Holder's Name">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label" for="card-number">Card Number</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" name="card-number" id="card-number" placeholder="Debit/Credit Card Number">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label" for="expiry-month">Expiration Date</label>
+          <div class="col-sm-9">
+            <div class="row">
+              <div class="col-xs-3">
+                <select class="form-control col-sm-2" name="expiry-month" id="expiry-month">
+                  <option>Month</option>
+                  <option value="01">Jan (01)</option>
+                  <option value="02">Feb (02)</option>
+                  <option value="03">Mar (03)</option>
+                  <option value="04">Apr (04)</option>
+                  <option value="05">May (05)</option>
+                  <option value="06">June (06)</option>
+                  <option value="07">July (07)</option>
+                  <option value="08">Aug (08)</option>
+                  <option value="09">Sep (09)</option>
+                  <option value="10">Oct (10)</option>
+                  <option value="11">Nov (11)</option>
+                  <option value="12">Dec (12)</option>
+                </select>
+              </div>
+              <div class="col-xs-3">
+                <select class="form-control" name="expiry-year" id="expiry-year">
+                  <option value="2017">2017</option>
+                  <option value="2018">2018</option>
+                  <option value="2019">2019</option>
+                  <option value="2020">2020</option>
+                  <option value="2021">2021</option>
+                  <option value="2022">2022</option>
+                  <option value="2023">2023</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label" for="cvv">Card CVV</label>
+          <div class="col-sm-3">
+            <input type="text" class="form-control" name="cvv" id="cvv" placeholder="Security Code">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-3 col-sm-9">
+            <button type="button" class="btn btn-success" id="submit">Pay Now</button>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+
+  </form>
+</div>
+
+  </body>
+</html>
