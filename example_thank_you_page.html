@@ -1,0 +1,52 @@
+<!--
+
+EXAMPLE "THANK YOU" PAGE THAT REDIRECTS TO DIFFERENT URLS, DEPENDING ON PRODUCT
+
+ChargeOver currently only supports redirecting to a single "thank you" page
+URL after signing up for a product using hosted sign-up pages.
+
+HOWEVER, you can very easily make that single thank-you page be a redirect that
+redirects per product, or per customer, or based on other custom attributes.
+This example shows how to redirect to different URLs depending on which product
+was purchased.
+
+-->
+<html>
+	<head>
+		<title>Please wait...</title>
+
+		<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+
+		<link href="https://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+		<script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+
+		<script>
+			$(document).ready(function() {
+
+				const url_params = new URLSearchParams(window.location.search);
+				const item_token = url_params.get('package.line_items[0].item_token');
+
+				console.log(item_token);
+
+				if (item_token == '064vjwb85f0l')   // "token" value from the first product (you can see this in ChargeOver if you look at the details for a product/plan)
+				{
+					window.location = 'http://example.com/thank_you_page_1';
+				}
+				else if (item_token == 'u0j13r14eh16')   // "token" value for your second product (you can see this in ChargeOver if you look at the details for a product/plan)
+				{
+					window.location = 'http://example.com/some_other_thank_you_page_here';
+				}
+				else
+				{
+					// Redirect to a generic/default thank-you page if we didn't match anything above
+					window.location = 'http://example.com/yet_another_thank_you_page_variation';
+				}
+
+			});
+		</script>
+
+	</head>
+	<body>
+		...
+	</body>
+</html>
